@@ -24,7 +24,7 @@ app.use(router);
 
 
 // Lancer l'application
-const port = process.env.PORT || 3000;
+const port = process.env.PORT || 3001;
 app.listen(port, () => {
   console.log(`Listening at http://localhost:${port}`);
 });
