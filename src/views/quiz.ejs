@@ -24,8 +24,8 @@
      <div class="mb-3 ms-2">
       <% question.propositions.forEach(answer => { %>
         <div>
-          <input type="radio" id="#" name="#" value="#">
-          <label for="#"><%= answer.description %></label>
+          <input type="radio" id="<%= answer.id %>" name="answer" value="<%= answer.description%>">
+          <label for="answer"><%= answer.description %></label>
         </div>       
       <% }) %>
       

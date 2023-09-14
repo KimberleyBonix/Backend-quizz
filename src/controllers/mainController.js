@@ -4,19 +4,22 @@ const mainController = {
   renderHomePage: async (req, res) => {
     try {
        const quizzes = await Quiz.findAll({
+        order: [['title', 'ASC']],
         include: ['author', 'tags']
       }); 
 
       res.render("home", {quizzes});
     }
-    catch {
-      res.status(404)
+    catch(err){
+      console.error(err);
+      res.status(500).render('500');
     }
   },
 
   renderQuizPage: async (req, res) => {
     try {
       const id = req.params.id;
+      if (isNaN(id)) { return next();}
 
       let quiz = await Quiz.findByPk(id, {
         include: [
@@ -32,8 +35,9 @@ const mainController = {
 
       res.render('quiz', {quiz})
       
-    } catch {
-      res.status(404)
+    } catch(err){
+      console.error(err);
+      res.status(500).render('500');
     }
   },
 
@@ -44,8 +48,9 @@ const mainController = {
       });
 
       res.render('themes', {themes})
-    } catch {
-      res.status(404)
+    } catch(err){
+      console.error(err);
+      res.status(500).render('500');
     }
 
   }

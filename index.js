@@ -4,6 +4,7 @@ dotenv.config();
 
 // Importer les dependances
 const express = require("express");
+const session = require('express-session');
 const router = require("./src/router");
 
 // Création de l'application express
@@ -18,6 +19,16 @@ app.use(express.static("public")); // Ca revient à déclarer une route par fich
 
 // Notre body parser pour les requêtes POST
 app.use(express.urlencoded({ extended: true }));
+
+// Session
+app.use(session({
+  secret: 'keyboard cat',
+  resave: true,
+  saveUninitialized: true,
+  cookie: { 
+
+  }
+}));
 
 // On plug le router
 app.use(router);
