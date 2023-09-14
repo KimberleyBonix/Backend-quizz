@@ -12,7 +12,29 @@ const mainController = {
     catch {
       res.status(404)
     }
-    
+  },
+
+  renderQuizPage: async (req, res) => {
+    try {
+      const id = req.params.id;
+
+      let quiz = await Quiz.findByPk(id, {
+        include: [
+          'tags',
+          { // questions
+          association: "questions", // on inclut les questions du quiz
+          include: [
+            {association : 'level'},
+            {association : 'propositions'},
+          ] 
+        }]
+      });
+
+      res.render('quiz', {quiz})
+      
+    } catch {
+      res.status(404)
+    }
   }
 };
 
