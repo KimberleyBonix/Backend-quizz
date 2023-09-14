@@ -35,6 +35,19 @@ const mainController = {
     } catch {
       res.status(404)
     }
+  },
+
+  renderAllThemesPage: async (req, res) => {
+    try {
+      const themes = await Tag.findAll({
+      include: ['quizzes']
+      });
+
+      res.render('themes', {themes})
+    } catch {
+      res.status(404)
+    }
+
   }
 };
 
