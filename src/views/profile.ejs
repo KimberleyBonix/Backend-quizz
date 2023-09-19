@@ -1,0 +1,41 @@
+<%- include('partials/header') %>
+
+<main class="container py-4">
+    <h1>Profil de <%= user.firstname %></h1>
+    <i><%= user.role %></i>
+
+    <% if(user.id === locals.user.id) {%>
+
+    <h2>Modifier ses informations personnelles</h2>
+    <% if(locals.errorMessage){ %> <%= locals.errorMessage %> <% } %>
+    <form action="/profile/u<%= locals.user.id%>" method="POST">
+        <label class="form-label h4" for="firstname">Prénom</label>
+        <input class="form-control mb-4" type="text" name="firstname" value="<%= locals.user.firstname %>">
+    
+        <label class="form-label h4" for="lastname">Nom</label>
+        <input class="form-control mb-4" type="text" name="lastname" value="<%= locals.user.lastname %>">
+    
+        <label class="form-label h4" for="email">Email</label>
+        <input class="form-control mb-4" type="text" name="email" value="<%= locals.user.email %>">
+
+        <input class="btn btn-primary d-block my-4 mx-auto" type="submit" value="Modifier">
+    </form>
+
+    <hr>
+
+    <input class="btn btn-primary d-block my-4 mx-auto" type="button" 
+        value="Changer de mot de passe" name="editPassword" href="/profile/u<%= locals.user.id%>/editpassword">
+    
+        <input class="btn btn-primary d-block my-4 mx-auto" type="button" 
+        value="Supprimer mon compte" name="editPassword" href="/profile/u<%= locals.user.id%>/deleteaccount">
+
+    <% } %>
+    <hr>
+
+    <h2>Mes quiz</h2>
+
+    
+
+</main>
+
+<%- include('partials/footer') %>

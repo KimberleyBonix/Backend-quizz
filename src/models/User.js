@@ -5,10 +5,10 @@ class User extends Model {}
 
 User.init({
   firstname: {
-    type: DataTypes.STRING
+    type: DataTypes.STRING,
   },
   lastname: {
-    type: DataTypes.STRING
+    type: DataTypes.STRING,
   },
   email: {
     type: DataTypes.STRING,
@@ -17,6 +17,11 @@ User.init({
   password: {
     type: DataTypes.STRING,
     allowNull: false
+  },
+  role: {
+    type: DataTypes.STRING,
+    allowNull: false,
+    defaultValue: "member",
   }
 }, {
   sequelize,

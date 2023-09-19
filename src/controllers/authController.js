@@ -1,51 +1,78 @@
+const bcrypt = require('bcrypt');
+const Joi = require('joi');
+
 const { User } = require('../models/index');
 
 const authController = {
     renderLoginPage: async (req, res) => {
         try {
             res.render('login')
-        } catch(err){
+        } 
+        catch(err){
             console.error(err);
             res.status(500).render('500');
-          }
+        }
     },
     
-    postLogin(req, res){      
-        const {email, password} = req.body;
-        console.log(email);
-        const array = [email, password];
-        console.log(array);
-        req.session.login = array;
-          
-        //req.session.login = req.body.login;
-        console.log(req.session.login);
-        res.redirect('/');
+    postLogin: async (req, res) => {      
+            const {email, password} = req.body;        
+            
+            const userFound = await User.findOne({
+                where: { email } 
+            })
+
+            const validPassword = bcrypt.compareSync(password, userFound.password);
+
+            if(!userFound || !validPassword){
+                return res.render('login', {
+                    error: "Email ou mot de passe incorrect."
+                })
+            }
+
+            req.session.user = userFound;
+            req.session.password = null;
+            
+            res.redirect(`/profile/u${req.session.user.id}`);
     },
 
     renderSignupPage: async (req, res) => {
-        try {                       
-            
+        try {                     
             res.render('signup')
-            
-        } catch(err){
+        } 
+        catch(err){
             console.error(err);
             res.status(500).render('500');
-          }
+        }
     },
     
     addNewUser: async (req, res) => {
         try {
-            const {firstname, lastname, email, password} = req.body;
+            let { firstname, lastname, email, password } = req.body;
+        
+            password = bcrypt.hashSync(password, 10);
+
+            const validationSchema = Joi.object({
+                firstname: Joi.string().trim().min(2).max(30).required(),
+                lastname: Joi.string().trim().min(2).max(30).required(),
+                email: Joi.string().email().required(),
+                password: Joi.string().min(1).required(),
+                confirmation: Joi.ref('password'),
+            });
+
+            const { error } = validationSchema.validate(req.body);
+
+            if(error){
+                res.status(401).render('signup', {errorMessage: error.details[0].message})
+            } 
             
-            const newUser = await User.create({firstname, lastname, email, password});        
+            await User.create({firstname, lastname, email, password});        
             
-            res.status(200).redirect('/signup', console.log('Utilisateur crée'));
-            
-            
-        } catch(err){
+            res.redirect('/login');
+        } 
+        catch(err){
             console.error(err);
             res.status(500).render('500');
-          }
+        }
     }
 };
 

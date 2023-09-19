@@ -16,31 +16,6 @@ const mainController = {
     }
   },
 
-  renderQuizPage: async (req, res) => {
-    try {
-      const id = req.params.id;
-      if (isNaN(id)) { return next();}
-
-      let quiz = await Quiz.findByPk(id, {
-        include: [
-          'tags',
-          { // questions
-          association: "questions", // on inclut les questions du quiz
-          include: [
-            {association : 'level'},
-            {association : 'propositions'},
-          ] 
-        }]
-      });
-
-      res.render('quiz', {quiz})
-      
-    } catch(err){
-      console.error(err);
-      res.status(500).render('500');
-    }
-  },
-
   renderAllThemesPage: async (req, res) => {
     try {
       const themes = await Tag.findAll({

@@ -6,6 +6,7 @@ dotenv.config();
 const express = require("express");
 const session = require('express-session');
 const router = require("./src/router");
+const userSession = require('./src/middlewares/userMiddleware');
 
 // Création de l'application express
 const app = express();
@@ -25,10 +26,10 @@ app.use(session({
   secret: 'keyboard cat',
   resave: true,
   saveUninitialized: true,
-  cookie: { 
-
-  }
+  cookie: { secure: false }
 }));
+
+app.use(userSession);
 
 // On plug le router
 app.use(router);
