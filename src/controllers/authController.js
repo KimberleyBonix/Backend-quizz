@@ -19,20 +19,23 @@ const authController = {
         
         const userFound = await User.findOne({
             where: { email } 
-        })
+        });
 
         const validPassword = bcrypt.compareSync(password, userFound.password);
 
         if(!userFound || !validPassword){
-            return res.render('login', {
+            res.render('login', {
                 error: "Email ou mot de passe incorrect."
             })
-        }
-
-        req.session.user = userFound;
-        req.session.password = null;
+        } 
+        else {
+            req.session.user = userFound;
+            req.session.password = null;
         
-        res.redirect(`/profile/u${req.session.user.id}`);
+            res.redirect(`/profile/u${req.session.user.id}`);
+        }
+        
+
     },
 
     renderSignupPage: async (req, res) => {
@@ -49,7 +52,6 @@ const authController = {
         try {
             let { firstname, lastname, email, password } = req.body;
         
-            password = bcrypt.hashSync(password, 10);
             password = bcrypt.hashSync(password, 10);
 
             const validationSchema = Joi.object({

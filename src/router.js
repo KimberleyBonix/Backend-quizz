@@ -30,6 +30,9 @@ router.post('/profile/u:id/editpassword', roleMiddleware.member, userController.
 
 router.get('/logout', userController.logOut);
 
+router.get('/profile/u:id/deleteaccount', userController.confirmDeleteAccountPage);
+router.post('/profile/u:id/deleteaccount', userController.deleteAccount);
+
 // Admin pages
 router.get('/admin', roleMiddleware.admin, adminController.renderAdminPage);
 

@@ -52,7 +52,7 @@ const userController = {
         if(confirmIdentity){
             newPassword = bcrypt.hashSync(newPassword, 10);
             confirmNewPassword = bcrypt.hashSync(confirmNewPassword, 10);
-            
+
             const validationSchema = Joi.object({
                 oldPassword: Joi.string().min(1).required(),
                 newPassword: Joi.string().min(1).not(Joi.ref('oldPassword')),
@@ -78,7 +78,24 @@ const userController = {
 
     },
 
-    deleteAccount: (req, res) => {
+    confirmDeleteAccountPage: (req, res) => {
+        res.render('confirmation')
+    },
+
+    deleteAccount: async(req, res) => {
+        const userChoice = req.body.choice;
+
+        if (userChoice === 'confirm') {
+    
+            await User.destroy({where: {id: req.session.user.id}});
+            req.session.user = null;
+            res.redirect('/');
+        } else if (userChoice === 'cancel') {
+            res.render('profile');
+        } else {
+            // Handle unexpected choices or errors
+            res.status(400).send('Invalid choice.');
+        }
         
     },
 
