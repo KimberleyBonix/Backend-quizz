@@ -21,6 +21,8 @@ const authController = {
             where: { email } 
         });
 
+        //! SOMETHING IS WRONG HERE
+        // Need to check if userFound existe first, then compare password
         const validPassword = bcrypt.compareSync(password, userFound.password);
 
         if(!userFound || !validPassword){
