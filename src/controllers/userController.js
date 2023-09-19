@@ -1,4 +1,5 @@
 const Joi = require('joi');
+const bcrypt = require('bcrypt');
 const { User } = require('../models/index');
 
 const userController = {
@@ -35,13 +36,46 @@ const userController = {
 
 
     renderPasswordPage: async (req, res) => {
-
+        
         res.render('password');
     },
 
     changePassword: async (req, res) => {
+        let { oldPassword, newPassword, confirmNewPassword } = req.body;
+    
+        const userFound = await User.findOne({
+            where: {id: req.session.user.id }
+        });
         
-        res.redirect(`/profile/u${req.session.user.id}`);
+        const confirmIdentity = bcrypt.compareSync(oldPassword, userFound.password);
+
+        if(confirmIdentity){
+            newPassword = bcrypt.hashSync(newPassword, 10);
+            confirmNewPassword = bcrypt.hashSync(confirmNewPassword, 10);
+            
+            const validationSchema = Joi.object({
+                oldPassword: Joi.string().min(1).required(),
+                newPassword: Joi.string().min(1).not(Joi.ref('oldPassword')),
+                confirmNewPassword: Joi.ref('newPassword'),
+            });
+
+            const { error } = validationSchema.validate(req.body);
+
+            if(error){
+                res.render('password', {errorMessage: error.details[0].message})
+            } 
+
+            await User.update({password: newPassword}, { where: {id: req.session.user.id } });
+            req.session.user.password = null;
+
+            res.status(201).render('profile', {updatePassword: `Votre mdp a été modifié`});
+        } 
+        
+
+        else {
+            res.status(404).render('password', {errorMessage: 'Votre ancien ancien mdp correspond pas'})
+        }
+
     },
 
     deleteAccount: (req, res) => {

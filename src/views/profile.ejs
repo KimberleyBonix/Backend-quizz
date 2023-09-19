@@ -22,9 +22,8 @@
     </form>
 
     <hr>
-
-    <input class="btn btn-primary d-block my-4 mx-auto" type="button" 
-        value="Changer de mot de passe" name="editPassword" href="/profile/u<%= locals.user.id%>/editpassword">
+    <% if(locals.updatePassword) {%><%= locals.updatePassword %><% } %>
+    <a class="btn btn-primary d-block my-4 mx-auto" href="/profile/u<%= locals.user.id%>/editpassword">Changer son mot de passe</a>
     
         <input class="btn btn-primary d-block my-4 mx-auto" type="button" 
         value="Supprimer mon compte" name="editPassword" href="/profile/u<%= locals.user.id%>/deleteaccount">
